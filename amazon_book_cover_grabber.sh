@@ -8,6 +8,17 @@
 # This program is based on work by Leonardo Brondani Schenkel
 # (https://github.com/lbschenkel/calibre-amazon-hires-covers)
 
+# Color codes
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Function to print with color
+print_color() {
+    printf "%b%s%b" "$1" "$2" "$NC"
+}
+
 # Function to extract ASIN from URL or use provided ASIN
 get_asin() {
     local input="$1"
@@ -50,8 +61,8 @@ download_image() {
 
     echo ""
     printf "Enter the directory where you want to save the image: "
-    echo ""
     read -r download_dir
+    echo ""  # Add a blank line after user input
 
     # Expand ~ to home directory if used
     download_dir=$(eval echo "$download_dir")
@@ -91,17 +102,27 @@ process_input() {
 
     if [ -z "$asin" ]; then
         echo ""
-        echo "Invalid input. Please provide a valid Amazon URL or ASIN." >&2
+        printf "Invalid input. Please provide a valid "
+        print_color "$YELLOW" "Amazon book URL"
+        printf " or "
+        print_color "$YELLOW" "ASIN"
+        echo "." >&2
         return 1
     fi
 
     local cover_url="https://ec2.images-amazon.com/images/P/${asin}.01.MAIN._SCRM_.jpg"
     echo ""
-    echo "Opening cover image for ASIN: $asin"
+    printf "Opening cover image for "
+    print_color "$YELLOW" "ASIN # "
+    echo "$asin"
     open_url "$cover_url"
 
     echo ""
-    printf "Would you like to save this file to disk? (y/n): "
+    printf "Would you like to save this file to disk? ("
+    print_color "$GREEN" "Y"
+    printf "/"
+    print_color "$RED" "N"
+    printf "): "
     read -r save_answer
     case $save_answer in
         [Yy]* ) 
@@ -114,7 +135,13 @@ process_input() {
 run_script() {
     while true; do
         echo ""
-        printf "Enter the Amazon book URL or ASIN number (or 'q' to quit): "
+        printf "Enter the "
+        print_color "$YELLOW" "Amazon book URL"
+        printf " or "
+        print_color "$YELLOW" "ASIN number"
+        printf " (or '"
+        print_color "$RED" "q"
+        printf "' to quit): "
         read -r input
         
         if [ "$input" = "q" ]; then
@@ -127,7 +154,11 @@ run_script() {
     done
 
     echo ""
-    printf "Do you want to run the script again? (y/n): "
+    printf "Do you want to run the script again? ("
+    print_color "$GREEN" "y"
+    printf "/"
+    print_color "$RED" "n"
+    printf "): "
     read -r answer
     case $answer in
         [Yy]* ) return 1 ;;
