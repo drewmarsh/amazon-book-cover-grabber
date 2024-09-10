@@ -8,3 +8,7 @@ To view or download a full-resolution book cover image, provide the script with 
   - ```0756413710```
 
 Download the script [here](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.0/amazon_book_cover_grabber.sh).
+
+> [!NOTE]
+>
+> To run .sh scripts on Windows, use Git Bash or similar.
