@@ -113,8 +113,8 @@ process_input() {
     local cover_url="https://ec2.images-amazon.com/images/P/${asin}.01.MAIN._SCRM_.jpg"
     echo ""
     printf "Opening cover image for "
-    print_color "$YELLOW" "ASIN # "
-    echo "$asin"
+    print_color "$YELLOW" "ASIN # $asin "
+    echo "in the default browser"
     open_url "$cover_url"
 
     echo ""
