@@ -7,6 +7,8 @@ To view or download a full-resolution book cover image, provide the script with 
 - 10-character International Standard Book Number (ISBN): 
   - ```0756413710```
 
+<br>
+
 > ### [Download](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.0/amazon_book_cover_grabber.sh)
 
 > [!NOTE]
