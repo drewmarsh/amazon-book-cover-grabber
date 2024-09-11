@@ -37,5 +37,5 @@ While it is not required to change any user settings to use these scripts out-of
 # 💾 Direct Downloads
 ### [Windows (.ps1 file)](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.1/amazon_book_cover_grabber.ps1)
 > [!NOTE]
-> This script is unsigned. To run it, you must right click the ```amazon_book_cover_grabber.ps1``` file, click '**Properties**', and then tick the '**Unblock**' box. 
+> This script is unsigned. To run it, you must right click the ```amazon_book_cover_grabber.ps1``` file, click '**Properties**', tick the '**Unblock**' box, and then click '**Apply**'. 
 ### [Linux/Mac (.sh file)](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.1/amazon_book_cover_grabber.sh)
