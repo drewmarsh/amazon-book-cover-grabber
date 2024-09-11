@@ -46,12 +46,16 @@ get_yes_no_input() {
     done
 }
 
-# Function to extract ASIN from URL or use provided ASIN
+# Function to extract ASIN from URL, use provided ASIN, or handle direct image URL
 get_asin() {
     local input="$1"
     local asin
 
-    if echo "$input" | grep -qE "^https?://"; then
+    if echo "$input" | grep -qE "^https?://ec2\.images-amazon\.com/images/P/[A-Z0-9]{10}\."; then
+        # Direct image URL
+        asin=$(echo "$input" | sed -E 's/.*\/P\/([A-Z0-9]{10})\..*/\1/')
+    elif echo "$input" | grep -qE "^https?://"; then
+        # Regular Amazon URL
         asin=$(echo "$input" | sed -E '
             s/.*\/dp\/([A-Z0-9]{10}).*/\1/;
             s/.*\/product\/([A-Z0-9]{10}).*/\1/;
@@ -59,6 +63,7 @@ get_asin() {
             s/.*\?asin=([A-Z0-9]{10}).*/\1/;
         ')
     else
+        # Assume it's an ASIN
         asin="$input"
     fi
 
@@ -166,13 +171,21 @@ process_input() {
         echo ""
         printf "Invalid input. Please provide a valid "
         print_color "$YELLOW" "Amazon book URL"
-        printf " or "
+        printf ", "
         print_color "$YELLOW" "ASIN"
+        printf ", or "
+        print_color "$YELLOW" "direct image URL"
         echo "." >&2
         return 1
     fi
 
     local cover_url="https://ec2.images-amazon.com/images/P/${asin}.01.MAIN._SCRM_.jpg"
+    
+    # If the input was already a direct image URL, use that instead
+    if echo "$input" | grep -qE "^https?://ec2\.images-amazon\.com/images/P/[A-Z0-9]{10}\."; then
+        cover_url="$input"
+    fi
+
     echo ""
     printf "Opening cover image for "
     print_color "$YELLOW" "ASIN # $asin "
