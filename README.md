@@ -9,7 +9,7 @@ To view or download a high-resolution book cover image, provide the script with 
   - ```0756413710```
 
 # User Configuration
-While it is not required to change any user settings to use these scripts out-of-the-box, some settings are easily conigurable:
+While it is not required to change any user settings to use these scripts out-of-the-box, some settings are easily configurable:
 
 ### Shell (.sh) script for Linux/Mac
 ```
