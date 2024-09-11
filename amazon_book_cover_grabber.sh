@@ -67,7 +67,18 @@ open_url() {
         Darwin*)  open "$url" ;;
         MINGW*)   start "$url" ;;
         MSYS*)    start "$url" ;;
-        *)        xdg-open "$url" ;;
+        *)
+            if command -v xdg-open > /dev/null 2>&1; then
+                xdg-open "$url"
+            elif [ -n "$BROWSER" ]; then
+                $BROWSER "$url"
+            else
+                printf "\n"
+                print_color "$YELLOW" "Unable to automatically open the URL."
+                printf "\nPlease copy and paste the following URL into your web browser:\n\n"
+                print_color "$PINK" "$url"
+            fi
+            ;;
     esac
 }
 
