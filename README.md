@@ -1,4 +1,4 @@
-# Instructions
+# 📋 Instructions
 To view or download a high-resolution book cover image, provide the script with any of the options below:
 
 - Amazon book **URL**: 
@@ -8,7 +8,7 @@ To view or download a high-resolution book cover image, provide the script with 
 - 10-character International Standard Book Number (**ISBN**): 
   - ```0756413710```
 
-# User Configuration
+# ⚙️ User Configuration
 While it is not required to change any user settings to use these scripts out-of-the-box, some settings are easily configurable:
 
 > ### Shell (.sh) script for Linux/Mac
@@ -31,6 +31,6 @@ While it is not required to change any user settings to use these scripts out-of
 - ```$global:ASK_SAVE```: If set to true, the user is asked whether they want to save the image file to disk.
 - ```$global:DEFAULT_SAVE_DIR```: Should be set to the desired default save directory of the user.
 
-# Direct Downloads
+# 💾 Direct Downloads
 ### [Windows (.ps1 file)](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.1/amazon_book_cover_grabber.ps1)
 ### [Linux/Mac (.sh file)](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.1/amazon_book_cover_grabber.sh)
