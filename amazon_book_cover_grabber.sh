@@ -24,6 +24,28 @@ print_color() {
     printf "%b%s%b" "$1" "$2" "$NC"
 }
 
+# Function to get yes/no input
+get_yes_no_input() {
+    local prompt="$1"
+    local response
+
+    while true; do
+        printf "%s" "$prompt"
+        read -r response
+        case "$response" in
+            [Yy]) return 0 ;;
+            [Nn]) return 1 ;;
+            *)
+                printf "\nInvalid input. Please enter "
+                print_color "$GREEN" "Y"
+                printf " or "
+                print_color "$RED" "N"
+                printf ".\n\n"
+                ;;
+        esac
+    done
+}
+
 # Function to extract ASIN from URL or use provided ASIN
 get_asin() {
     local input="$1"
@@ -77,19 +99,19 @@ save_image() {
         echo ""
         echo "How would you like to save the image?"
         echo ""
-        echo "1. Use the default save directory ($default_save_dir) as defined in the script"
-        echo "2. Enter a custom directory"
+        printf "%b%s%b Use the default save directory (%s) as defined in the script\n" "$YELLOW" "1." "$NC" "$default_save_dir"
+        printf "%b%s%b Enter a custom directory\n" "$YELLOW" "2." "$NC"
         echo ""
-        printf "Enter your choice here: "
+        printf "Enter your choice (%b%s%b or %b%s%b): " "$YELLOW" "1" "$NC" "$YELLOW" "2" "$NC"
         
         while true; do
             read -r choice
             case $choice in
-                1)
+                1|1.)
                     save_dir="$default_save_dir"
                     break
                     ;;
-                2)
+                2|2.)
                     echo ""
                     printf "Enter the custom directory where you want to save the image: "
                     read -r save_dir
@@ -99,7 +121,7 @@ save_image() {
                     ;;
                 *)
                     echo ""
-                    printf "Invalid choice. Please enter 1 or 2: "
+                    printf "Invalid choice. Please enter %b%s%b or %b%s%b: " "$YELLOW" "1" "$NC" "$YELLOW" "2" "$NC"
                     ;;
             esac
         done
@@ -159,17 +181,9 @@ process_input() {
 
     if [ "$ask_save" = true ]; then
         echo ""
-        printf "Would you like to save this file to disk? ("
-        print_color "$GREEN" "Y"
-        printf "/"
-        print_color "$RED" "N"
-        printf "): "
-        read -r save_answer
-        case $save_answer in
-            [Yy]* ) 
-                save_image "$cover_url" "$asin"
-                ;;
-        esac
+        if get_yes_no_input "Would you like to save this file to disk? ("$(print_color "$GREEN" "Y")"/"$(print_color "$RED" "N")"): "; then
+            save_image "$cover_url" "$asin"
+        fi
     fi
 }
 
@@ -177,40 +191,32 @@ process_input() {
 main() {
     local input
     
-    if [ $# -eq 0 ]; then
+    while true; do
         echo ""
         printf "Enter the "
         print_color "$YELLOW" "Amazon book URL"
         printf " or "
         print_color "$YELLOW" "ASIN number"
-        printf " (or '"
-        print_color "$RED" "q"
+        printf " (alternatively, enter '"
+        print_color "$YELLOW" "q"
         printf "' to quit): "
         read -r input
         
         if [ "$input" = "q" ]; then
-            return 0
+            break
         fi
-    else
-        input="$1"
-    fi
 
-    process_input "$input"
-
-    if [ "$ask_run_again" = true ]; then
-        echo ""
-        printf "Do you want to run the script again? ("
-        print_color "$GREEN" "Y"
-        printf "/"
-        print_color "$RED" "N"
-        printf "): "
-        read -r answer
-        case $answer in
-            [Yy]* ) 
-                main
-                ;;
-        esac
-    fi
+        if process_input "$input"; then
+            if [ "$ask_run_again" = true ]; then
+                echo ""
+                if ! get_yes_no_input "Do you want to run the script again? ("$(print_color "$GREEN" "Y")"/"$(print_color "$RED" "N")"): "; then
+                    break
+                fi
+            else
+                break
+            fi
+        fi
+    done
 }
 
 main "$@"
