@@ -1,30 +1,21 @@
 #!/bin/sh
 
 # User-configurable options
-ask_run_again=true
-ask_save=true
-default_save_dir="$HOME/Downloads"  # Default save-to-disk directory
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is based on work by Leonardo Brondani Schenkel
-# (https://github.com/lbschenkel/calibre-amazon-hires-covers)
+ASK_RUN_AGAIN=true
+ASK_SAVE=true
+DEFAULT_SAVE_DIR="$HOME/Downloads"
 
 # Color codes
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
+ORANGE='\033[0;33m'
 NC='\033[0m' # No Color
 
-# Function to print with color
 print_color() {
     printf "%b%s%b" "$1" "$2" "$NC"
 }
 
-# Function to get yes/no input
 get_yes_no_input() {
     local prompt="$1"
     local response
@@ -33,8 +24,8 @@ get_yes_no_input() {
         printf "%s" "$prompt"
         read -r response
         case "$response" in
-            [Yy]) return 0 ;;
-            [Nn]) return 1 ;;
+            [Yy]*) return 0 ;;
+            [Nn]*) return 1 ;;
             *)
                 printf "\nInvalid input. Please enter "
                 print_color "$GREEN" "Y"
@@ -46,16 +37,13 @@ get_yes_no_input() {
     done
 }
 
-# Function to extract ASIN from URL, use provided ASIN, or handle direct image URL
 get_asin() {
     local input="$1"
     local asin
 
     if echo "$input" | grep -qE "^https?://ec2\.images-amazon\.com/images/P/[A-Z0-9]{10}\."; then
-        # Direct image URL
         asin=$(echo "$input" | sed -E 's/.*\/P\/([A-Z0-9]{10})\..*/\1/')
     elif echo "$input" | grep -qE "^https?://"; then
-        # Regular Amazon URL
         asin=$(echo "$input" | sed -E '
             s/.*\/dp\/([A-Z0-9]{10}).*/\1/;
             s/.*\/product\/([A-Z0-9]{10}).*/\1/;
@@ -63,7 +51,6 @@ get_asin() {
             s/.*\?asin=([A-Z0-9]{10}).*/\1/;
         ')
     else
-        # Assume it's an ASIN
         asin="$input"
     fi
 
@@ -74,7 +61,6 @@ get_asin() {
     fi
 }
 
-# Function to open URL in default browser
 open_url() {
     local url="$1"
     case "$(uname -s)" in
@@ -85,62 +71,43 @@ open_url() {
     esac
 }
 
-# Function to save image to disk
 save_image() {
     local url="$1"
     local asin="$2"
     local save_dir
 
-    if [ -z "$default_save_dir" ] || [ ! -d "$default_save_dir" ]; then
-        # Default save directory is invalid or empty, skip to custom directory input
-        echo ""
-        printf "Enter the custom directory where you want to save the image: "
+    if [ -z "$DEFAULT_SAVE_DIR" ] || [ ! -d "$DEFAULT_SAVE_DIR" ]; then
+        printf "\nEnter the custom directory where you want to save the image: "
         read -r save_dir
-        # Expand ~ to home directory if used
         save_dir=$(eval echo "$save_dir")
-    elif [ "$ask_save" = false ]; then
-        save_dir="$default_save_dir"
+    elif [ "$ASK_SAVE" = false ]; then
+        save_dir="$DEFAULT_SAVE_DIR"
     else
-        echo ""
-        echo "How would you like to save the image?"
-        echo ""
-        printf "%b%s%b Use the default save directory (%s) as defined in the script\n" "$YELLOW" "1." "$NC" "$default_save_dir"
-        printf "%b%s%b Enter a custom directory\n" "$YELLOW" "2." "$NC"
-        echo ""
-        printf "Enter your choice (%b%s%b or %b%s%b): " "$YELLOW" "1" "$NC" "$YELLOW" "2" "$NC"
+        printf "\nHow would you like to save the image?\n\n"
+        printf "   %b%s%b Use the default save directory (%s) as defined in the script\n" "$YELLOW" "1." "$NC" "$DEFAULT_SAVE_DIR"
+        printf "   %b%s%b Enter a custom directory\n\n" "$YELLOW" "2." "$NC"
         
         while true; do
+            printf "Enter your choice (%b%s%b or %b%s%b): " "$YELLOW" "1" "$NC" "$YELLOW" "2" "$NC"
             read -r choice
             case $choice in
-                1|1.)
-                    save_dir="$default_save_dir"
-                    break
-                    ;;
+                1|1.) save_dir="$DEFAULT_SAVE_DIR"; break ;;
                 2|2.)
-                    echo ""
-                    printf "Enter the custom directory where you want to save the image: "
+                    printf "\nEnter the custom directory where you want to save the image: "
                     read -r save_dir
-                    # Expand ~ to home directory if used
                     save_dir=$(eval echo "$save_dir")
                     break
                     ;;
-                *)
-                    echo ""
-                    printf "Invalid choice. Please enter %b%s%b or %b%s%b: " "$YELLOW" "1" "$NC" "$YELLOW" "2" "$NC"
-                    ;;
+                *) printf "\nInvalid choice. Please enter %b%s%b or %b%s%b.\n" "$YELLOW" "1" "$NC" "$YELLOW" "2" "$NC" ;;
             esac
         done
     fi
 
-    echo ""  # Add a blank line after user input
+    printf "\n"
 
     if [ ! -d "$save_dir" ]; then
-        echo "The specified directory does not exist. Creating it now."
-        mkdir -p "$save_dir"
-        if [ $? -ne 0 ]; then
-            echo "Failed to create directory. Please check permissions and try again."
-            return 1
-        fi
+        printf "The specified directory does not exist. Creating it now.\n"
+        mkdir -p "$save_dir" || { printf "Failed to create directory. Please check permissions and try again.\n"; return 1; }
     fi
 
     local filename="${save_dir}/${asin}_cover.jpg"
@@ -150,63 +117,57 @@ save_image() {
     elif command -v wget >/dev/null 2>&1; then
         wget -O "$filename" "$url"
     else
-        echo "Error: Neither curl nor wget is available. Unable to save the image."
+        printf "Error: Neither curl nor wget is available. Unable to save the image.\n"
         return 1
     fi
 
     if [ $? -eq 0 ]; then
-        echo "Image saved as: $filename"
+        printf "Image saved as: %s\n" "$filename"
     else
-        echo "Failed to save the image."
+        printf "Failed to save the image.\n"
         return 1
     fi
 }
 
-# Function to process input and open cover
 process_input() {
     local input="$1"
     local asin=$(get_asin "$input")
 
     if [ -z "$asin" ]; then
-        echo ""
-        printf "Invalid input. Please provide a valid "
+        printf "\nInvalid input. Please provide a valid "
         print_color "$YELLOW" "Amazon book URL"
         printf ", "
         print_color "$YELLOW" "ASIN"
         printf ", or "
         print_color "$YELLOW" "direct image URL"
-        echo "." >&2
+        printf ".\n" >&2
         return 1
     fi
 
     local cover_url="https://ec2.images-amazon.com/images/P/${asin}.01.MAIN._SCRM_.jpg"
     
-    # If the input was already a direct image URL, use that instead
     if echo "$input" | grep -qE "^https?://ec2\.images-amazon\.com/images/P/[A-Z0-9]{10}\."; then
         cover_url="$input"
     fi
 
-    echo ""
-    printf "Opening cover image for "
+    printf "\nOpening cover image for "
     print_color "$YELLOW" "ASIN # $asin "
-    echo "in the default browser"
+    printf "in the default browser\n"
     open_url "$cover_url"
 
-    if [ "$ask_save" = true ]; then
-        echo ""
+    if [ "$ASK_SAVE" = true ]; then
+        printf "\n"
         if get_yes_no_input "Would you like to save this file to disk? ("$(print_color "$GREEN" "Y")"/"$(print_color "$RED" "N")"): "; then
             save_image "$cover_url" "$asin"
         fi
     fi
 }
 
-# Main script
 main() {
     local input
     
     while true; do
-        echo ""
-        printf "Enter the "
+        printf "\nEnter the "
         print_color "$YELLOW" "Amazon book URL"
         printf " or "
         print_color "$YELLOW" "ASIN number"
@@ -215,13 +176,11 @@ main() {
         printf "' to quit): "
         read -r input
         
-        if [ "$input" = "q" ]; then
-            break
-        fi
+        [ "$input" = "q" ] && break
 
         if process_input "$input"; then
-            if [ "$ask_run_again" = true ]; then
-                echo ""
+            if [ "$ASK_RUN_AGAIN" = true ]; then
+                printf "\n"
                 if ! get_yes_no_input "Do you want to run the script again? ("$(print_color "$GREEN" "Y")"/"$(print_color "$RED" "N")"): "; then
                     break
                 fi
