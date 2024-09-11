@@ -128,7 +128,7 @@ save_image() {
     fi
 
     if [ $? -eq 0 ]; then
-        printf "\nImage saved as: %b%s%b\n" "$PINK" "$filename" "$NC"
+        printf "\nImage saved to path: %b%s%b\n" "$PINK" "$filename" "$NC"
     else
         printf "Failed to save the image.\n"
         return 1
