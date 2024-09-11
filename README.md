@@ -1,3 +1,6 @@
+# 🔎 Preview
+![amazon-book-cover-grabber_preview](/preview/amazon-book-cover-grabber_preview.png)
+
 # 📋 Instructions
 To view or download a high-resolution book cover image, provide the script with any of the options below:
 
