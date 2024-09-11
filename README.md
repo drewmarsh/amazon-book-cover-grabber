@@ -9,4 +9,4 @@ To view or download a high-resolution book cover image, provide the script with 
 
 > # Direct Downloads
 > ### [Windows](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.1/amazon_book_cover_grabber.ps1) <br>
-> ### [Linux/Mac](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.1/amazon_book_cover_grabber.ps1)
+> ### [Linux/Mac](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.1/amazon_book_cover_grabber.sh)
