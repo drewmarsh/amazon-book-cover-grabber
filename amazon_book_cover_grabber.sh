@@ -5,6 +5,14 @@ ASK_RUN_AGAIN=true
 ASK_SAVE=true
 DEFAULT_SAVE_DIR="$HOME/Downloads"
 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is based on work by Leonardo Brondani Schenkel
+# (https://github.com/lbschenkel/calibre-amazon-hires-covers)
+
 # Color codes
 GREEN='\033[0;32m'
 RED='\033[0;31m'

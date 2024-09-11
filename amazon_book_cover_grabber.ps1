@@ -2,6 +2,16 @@
 $global:ASK_RUN_AGAIN = $true
 $global:ASK_SAVE = $true
 $global:DEFAULT_SAVE_DIR = "$env:USERPROFILE\Downloads"
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is based on work by Leonardo Brondani Schenkel
+# (https://github.com/lbschenkel/calibre-amazon-hires-covers)
+
+# Script-specific variables
 $global:USER_INPUT = ""
 
 # Color codes
