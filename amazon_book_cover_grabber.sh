@@ -9,7 +9,7 @@ DEFAULT_SAVE_DIR="$HOME/Downloads"
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
-ORANGE='\033[0;33m'
+PINK='\033[0;35m'
 NC='\033[0m' # No Color
 
 print_color() {
@@ -84,8 +84,8 @@ save_image() {
         save_dir="$DEFAULT_SAVE_DIR"
     else
         printf "\nHow would you like to save the image?\n\n"
-        printf "   %b%s%b Use the default save directory (%s) as defined in the script\n" "$YELLOW" "1." "$NC" "$DEFAULT_SAVE_DIR"
-        printf "   %b%s%b Enter a custom directory\n\n" "$YELLOW" "2." "$NC"
+        printf "%b%s%b Use the default save directory (%b%s%b) as defined in the script\n" "$YELLOW" "1." "$NC" "$PINK" "$DEFAULT_SAVE_DIR" "$NC"
+        printf "%b%s%b Enter a custom directory\n\n" "$YELLOW" "2." "$NC"
         
         while true; do
             printf "Enter your choice (%b%s%b or %b%s%b): " "$YELLOW" "1" "$NC" "$YELLOW" "2" "$NC"
@@ -105,6 +105,12 @@ save_image() {
 
     printf "\n"
 
+    # Ensure we have a non-empty directory
+    if [ -z "$save_dir" ]; then
+        printf "Error: No valid directory specified. Unable to save the image.\n"
+        return 1
+    fi
+
     if [ ! -d "$save_dir" ]; then
         printf "The specified directory does not exist. Creating it now.\n"
         mkdir -p "$save_dir" || { printf "Failed to create directory. Please check permissions and try again.\n"; return 1; }
@@ -122,7 +128,7 @@ save_image() {
     fi
 
     if [ $? -eq 0 ]; then
-        printf "Image saved as: %s\n" "$filename"
+        printf "\nImage saved as: %b%s%b\n" "$PINK" "$filename" "$NC"
     else
         printf "Failed to save the image.\n"
         return 1
