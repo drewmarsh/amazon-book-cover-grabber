@@ -2,7 +2,7 @@
 ![amazon-book-cover-grabber_preview](/preview/amazon-book-cover-grabber_preview.png)
 
 # 📋 Instructions
-To view or download a high-resolution book cover image, provide the script with any of the options below:
+To view or download a high-resolution book cover image from Amaazon, provide the script with any of the options below:
 
 - Amazon book **URL**: 
   - ```https://www.amazon.com/Name-Wind-Anniversary-Kingkiller-Chronicle/dp/0756413710```
