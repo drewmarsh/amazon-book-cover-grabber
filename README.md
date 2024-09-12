@@ -22,7 +22,7 @@ While it is not required to change any user settings to use these scripts out-of
 > ```
 - ```$global:ASK_RUN_AGAIN```: If set to true, the user is asked if they want to run the script again after it concludes.
 - ```$global:ASK_SAVE```: If set to true, the user is asked whether they want to save the image file to disk.
-- ```$global:DEFAULT_SAVE_DIR```: Should be set to the desired default save directory of the user.
+- ```$global:DEFAULT_SAVE_DIR```: Should be set to the desired default save directory.
 
 > ### Shell (.sh) script for Linux/Mac
 > ```
@@ -32,7 +32,7 @@ While it is not required to change any user settings to use these scripts out-of
 > ```
 - ```ASK_RUN_AGAIN```: If set to true, the user is asked if they want to run the script again after it concludes.
 - ```ASK_SAVE```: If set to true, the user is asked whether they want to save the image file to disk.
-- ```DEFAULT_SAVE_DIR```: Should be set to the desired default save directory of the user.
+- ```DEFAULT_SAVE_DIR```: Should be set to the desired default save directory.
 
 # 💾 Direct Downloads
 ### [Windows (.ps1 file)](https://github.com/drewmarsh/amazon-book-cover-grabber/releases/download/v1.0.1/amazon_book_cover_grabber.ps1)
